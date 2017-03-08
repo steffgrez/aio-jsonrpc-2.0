@@ -1,20 +1,3 @@
-"""
-from fast_jsonrpc import JSONRPCResolver
-
-def foo(msg)
-    return 'foobar ' + str(msg)
-
-router = {'foo': foo}
-resolver = JSONRPCResolver(router)
-
-json_request = {"jsonrpc": "2.0", "method": "foo", "params": ["toto"], "id": 1}
-json_response = resolver.handle(json_request)
-
-print json_response
--> {"jsonrpc": "2.0", "result": "foobar toto", "id": 1}
-"""
-
-
 import json
 
 from aio_jsonrpc_20.handler.request import RequestHandler
