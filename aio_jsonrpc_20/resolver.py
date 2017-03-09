@@ -4,7 +4,7 @@ from aio_jsonrpc_20.handler.request import RequestHandler
 from aio_jsonrpc_20.handler.response import ResponseHandler
 
 
-class JSONRPCResolver(object):
+class RequestResolver(object):
 
     __slots__ = [
         'serializer',

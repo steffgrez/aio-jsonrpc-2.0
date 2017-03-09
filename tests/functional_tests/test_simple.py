@@ -4,7 +4,7 @@ import pprint
 import json
 import pytest
 
-from aio_jsonrpc_20 import JSONRPCResolver
+from aio_jsonrpc_20 import RequestResolver
 
 
 async def subtract(minuend, subtrahend):
@@ -38,7 +38,7 @@ router = {
     'notify': notify,
 }
 
-resolver = JSONRPCResolver(router, error_verbose=False)
+resolver = RequestResolver(router, error_verbose=False)
 
 
 @pytest.mark.asyncio
