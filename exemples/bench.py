@@ -4,7 +4,7 @@ import time
 
 import rapidjson
 
-from aio_jsonrpc_20 import JSONRPCResolver
+from aio_jsonrpc_20 import RequestResolver
 
 bulk = 30000
 query = '{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23], "id": 1}'
@@ -28,25 +28,25 @@ async def subtract(a, b):
 async def main():
     print("#" * 30)
     router = {'subtract': subtract}
-    resolver = JSONRPCResolver(router)
+    resolver = RequestResolver(router)
 
     p = partial(resolver.handle, query)
     print(await bench(p, 'aio_jsonrpc_20, json', bulk))
 
     print("=" * 30)
-    resolver = JSONRPCResolver(router, lazy_check=True)
+    resolver = RequestResolver(router, lazy_check=True)
 
     p = partial(resolver.handle, query)
     print(await bench(p, 'aio_jsonrpc_20, json, lazy check', bulk))
 
     print("=" * 30)
-    resolver = JSONRPCResolver(router, serializer=rapidjson)
+    resolver = RequestResolver(router, serializer=rapidjson)
 
     p = partial(resolver.handle, query)
     print(await bench(p, 'aio_jsonrpc_20, rapidjson', bulk))
 
     print("=" * 30)
-    resolver = JSONRPCResolver(router, lazy_check=True, serializer=rapidjson)
+    resolver = RequestResolver(router, lazy_check=True, serializer=rapidjson)
 
     p = partial(resolver.handle, query)
     print(await bench(p, 'aio_jsonrpc_20, rapidjson, lazy_check', bulk))

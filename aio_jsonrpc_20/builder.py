@@ -1,10 +1,17 @@
 import json
 
+from aio_jsonrpc_20.utils import check_request, lazy_check_request
+
 
 class RequestBuilder():
-    def __init__(self, serializer=json):
+    def __init__(self, serializer=json, lazy_check=False):
         self.serializer = serializer
         self.inc = 1
+
+        if lazy_check:
+            self.check_request = lazy_check_request
+        else:
+            self.check_request = check_request
 
     def call(self, method, params=None):
         request = {
@@ -15,6 +22,8 @@ class RequestBuilder():
 
         if params:
             request["params"] = params
+
+        self.check_request(request)
 
         self.inc += 1
 
@@ -31,6 +40,8 @@ class RequestBuilder():
 
         if params:
             request["params"] = params
+
+        check_request(request)
 
         if self.serializer:
             return self.serializer.dumps(request)

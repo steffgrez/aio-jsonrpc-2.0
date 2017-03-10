@@ -1,6 +1,9 @@
 import json
 
+import pytest
+
 from aio_jsonrpc_20.builder import RequestBuilder, BatchRequestBuilder
+from aio_jsonrpc_20.exception import InvalidRequestException
 
 
 def test_simple_builder():
@@ -30,6 +33,29 @@ def test_simple_builder():
         "method": "aaa",
         "params": [3, 4],
         "id": 2
+    }
+
+
+def test_error_builder():
+    builder = RequestBuilder()
+
+    with pytest.raises(InvalidRequestException):
+        builder.call(method=[1], params=[3, 4])
+
+    with pytest.raises(InvalidRequestException):
+        builder.call(method="rpc.toto", params=[3, 4])
+
+    with pytest.raises(InvalidRequestException):
+        builder.call(method="aaa", params=1)
+
+    builder = RequestBuilder(lazy_check=True)
+    result = builder.call(method=[1], params=[3, 4])
+
+    assert json.loads(result) == {
+        "jsonrpc": "2.0",
+        "method": [1],
+        "params": [3, 4],
+        "id": 1
     }
 
 
@@ -86,8 +112,6 @@ def test_simple_batch_builder():
     ]
 
     builder.purge()
-
-    print("aaa" + builder.get_request())
     assert json.loads(builder.get_request()) == []
 
 
