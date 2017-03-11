@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from aio_jsonrpc_20.exception import InvalidRequestException
@@ -9,23 +10,12 @@ from aio_jsonrpc_20.utils import (
 )
 
 
-async def sequential_batch(resolver, request):
-    response = []
-    for sub_req in request:
-        sub_resp = await resolver._get_response(sub_req)
-        if sub_resp:
-            response.append(sub_resp)
-
-    return response
-
-
 class RequestResolver(object):
     """This class allow to resolve a request, and build a response."""
     __slots__ = [
         'router',
         'serializer',
         'response_maker',
-        '_get_batch_response',
         'check_request'
     ]
 
@@ -34,14 +24,11 @@ class RequestResolver(object):
             router,
             lazy_check=False,
             error_verbose=True,
-            serializer=json,
-            batch_behavior=sequential_batch
+            serializer=json
     ):
         self.router = router
         self.response_maker = ResponseMaker(error_verbose)
         self.serializer = serializer
-
-        self._get_batch_response = batch_behavior
 
         if lazy_check:
             self.check_request = lazy_check_request
@@ -65,10 +52,11 @@ class RequestResolver(object):
                 try:
                     # batch request case
                     if isinstance(request, list):
-                        response = await self._get_batch_response(
-                            self,
-                            request
-                        )
+                        coros = []
+                        for sub_req in request:
+                            coros.append(self._get_response(sub_req))
+                        response = await asyncio.gather(*coros)
+                        response = [elt for elt in response if elt]
                     # simple request case
                     else:
                         response = await self._get_response(request)

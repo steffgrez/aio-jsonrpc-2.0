@@ -37,7 +37,7 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 ```
 Result:
-```
+```JSON
 {"jsonrpc": "2.0", "result": "foobar toto", "id": 1}
 ```
 
@@ -55,7 +55,7 @@ print(json_request)
 ```
 
 Result:
-```
+```JSON
 {"jsonrpc": "2.0", "method": "foo", "params": {"name": "bar"}, "id": 1}
 {"jsonrpc": "2.0", "method": "foo", "params": {"name": "bar2"}, "id": 2}
 {"jsonrpc": "2.0", "method": "log", "params": ["hello"]}
@@ -76,7 +76,7 @@ print(json_request)
 ```
 
 Result:
-```
+```JSON
 1 2
 [
     {"jsonrpc": "2.0", "method": "foo", "params": {"name": "bar"}, "id": 1},
