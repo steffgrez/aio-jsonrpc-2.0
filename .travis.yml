@@ -3,9 +3,14 @@ sudo: false
 language: python
 
 python:
-    - "3.5"
-    - "3.6"
+  - "3.5"
+  - "3.6"
 
-install: pip install tox-travis
+install:
+  - "pip install -r requirements_test.txt"
+  - "pip install -e ."
 
-script: tox
+script: py.test --cov=aio_jsonrpc_20 --cov-report term-missing tests/ -s
+
+after_success:
+    - coveralls

@@ -1,3 +1,5 @@
+coverage
+coveralls
 pylint
 pytest
 pytest-asyncio
