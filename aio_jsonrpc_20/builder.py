@@ -41,7 +41,7 @@ class RequestBuilder():
         if params:
             request["params"] = params
 
-        check_request(request)
+        self.check_request(request)
 
         if self.serializer:
             return self.serializer.dumps(request)
