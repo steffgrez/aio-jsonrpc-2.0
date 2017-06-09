@@ -4,7 +4,10 @@ import pprint
 import json
 import pytest
 
-from aio_jsonrpc_20 import RequestResolver
+from aio_jsonrpc_20 import (
+    RequestResolver,
+    CustomJsonRpcException
+)
 
 
 async def subtract(minuend, subtrahend):
@@ -15,6 +18,11 @@ async def subtract(minuend, subtrahend):
 async def raise_error():
     await asyncio.sleep(0.1)
     raise Exception('error')
+
+
+async def raise_custom_error():
+    await asyncio.sleep(0.1)
+    raise CustomJsonRpcException(-32004, 'error')
 
 
 async def update(a, b, c, d, e):
@@ -35,6 +43,7 @@ router = {
     'update': update,
     'foobar': foobar,
     'raise_error': raise_error,
+    'raise_custom_error': raise_custom_error,
     'notify': notify,
 }
 
@@ -90,6 +99,10 @@ resolver = RequestResolver(router, error_verbose=False)
     (
         """{"jsonrpc": "2.0", "method": "raise_error", "id": 1}""",  # NOQA
         """{"jsonrpc": "2.0", "error": {"code": -32603, "message": "Internal error"}, "id": 1}"""  # NOQA
+    ),
+    (
+        """{"jsonrpc": "2.0", "method": "raise_custom_error", "id": 1}""",  # NOQA
+        """{"jsonrpc": "2.0", "error": {"code": -32004, "message": "Server error"}, "id": 1}"""  # NOQA
     ),
     (
         """{"jsonrpc": "2.0", "method": "foobar", "params": "toto", "id": 1}""",  # NOQA

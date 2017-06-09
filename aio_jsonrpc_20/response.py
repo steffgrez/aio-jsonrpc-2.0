@@ -53,7 +53,10 @@ class ResponseMaker(object):
             -32603, 'Internal error', data=data, request_id=request_id
         )
 
-    def get_server_error(self, data=None, request_id=None):
+    def get_server_error(self, code, data, request_id=None):
         return self.get_error(
-            -32000, 'Server error', data=data, request_id=request_id
+            code=code,
+            message='Server error',
+            data=data,
+            request_id=request_id
         )

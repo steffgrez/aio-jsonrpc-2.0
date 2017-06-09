@@ -1,13 +1,20 @@
 import asyncio
 import json
+import logging
 
-from aio_jsonrpc_20.exception import InvalidRequestException
+from aio_jsonrpc_20.exception import (
+    InvalidRequestException,
+    CustomJsonRpcException
+)
 from aio_jsonrpc_20.response import ResponseMaker
 from aio_jsonrpc_20.utils import (
     is_valid_params,
     check_request,
     lazy_check_request
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class RequestResolver(object):
@@ -44,6 +51,7 @@ class RequestResolver(object):
         try:
             request = self.serializer.loads(str_request)
         except (TypeError, ValueError):
+            logger.warning('Bad formatted json')
             response = self.response_maker.get_parse_error(
                 data='Bad formatted json'
             )
@@ -62,7 +70,7 @@ class RequestResolver(object):
                         response = await self._get_response(request)
                 # handle uncaught exception
                 except Exception as e:
-                    print(e)
+                    logger.warning('Unexpected error: ' + str(e))
                     response = self.response_maker.get_internal_error(
                         data=e.args[0]
                     )
@@ -81,14 +89,16 @@ class RequestResolver(object):
         except KeyError:
             request_id = None
         except TypeError:
+            logger.warning('Request should be a dict object')
             return self.response_maker.get_invalid_request(
-                data="Request should be an dict object",
+                data="Request should be a dict object",
             )
 
         # check jsonrpc 2.0 specification
         try:
             self.check_request(request)
         except InvalidRequestException as e:
+            logger.warning('Invalid request')
             return self.response_maker.get_invalid_request(
                 data=e.args[0],
                 request_id=request_id
@@ -98,10 +108,12 @@ class RequestResolver(object):
         try:
             method = self.router[request['method']]
         except KeyError:
+            logger.warning('Method not found')
             return self.response_maker.get_method_not_found(
                 request_id=request_id
             )
         except TypeError:
+            logger.error('Router should be like an dict object')
             return self.response_maker.get_internal_error(
                 data="Router should be like an dict object",
             )
@@ -116,16 +128,26 @@ class RequestResolver(object):
                     result = await method(*params)
             else:
                 result = await method()
+        except CustomJsonRpcException as e:
+            # catch custom error
+            logger.warning('CustomError: ' + str(e))
+            return self.response_maker.get_server_error(
+                code=e.code,
+                data=e.data,
+                request_id=request_id
+            )
         except Exception as e:
             # determine the error's type
             if (
                     isinstance(e, TypeError) and
                     not is_valid_params(method, params)
             ):
+                logger.warning('Invalid params')
                 return self.response_maker.get_invalid_params(
                     data=e.args[0], request_id=request_id
                 )
             else:
+                logger.warning('Application error: ' + str(e))
                 return self.response_maker.get_internal_error(
                     data=e.args[0], request_id=request_id
                 )

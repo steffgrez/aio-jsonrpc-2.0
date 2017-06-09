@@ -1,4 +1,3 @@
-
 import inspect
 
 from aio_jsonrpc_20.exception import InvalidRequestException
@@ -66,7 +65,7 @@ def check_request(request):
 
 def is_valid_params(func, params):
     # inspect method
-    spec = inspect.getargspec(func)
+    spec = inspect.getfullargspec(func)
     if spec.defaults:
         required = spec.args[:-len(spec.defaults)]
     else:
