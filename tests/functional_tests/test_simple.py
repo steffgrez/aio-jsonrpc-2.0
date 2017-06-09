@@ -61,6 +61,10 @@ resolver = RequestResolver(router, error_verbose=False)
         """{"jsonrpc": "2.0", "result": "foobar toto", "id": 1}"""
     ),
     (
+        """{"jsonrpc": "2.0", "method": "foobar", "params": ["toté パイソン"], "id": 1}""",  # NOQA
+        """{"jsonrpc": "2.0", "result": "foobar toté パイソン", "id": 1}"""
+    ),
+    (
         """{"jsonrpc": "2.0", "method": "subtract", "params": [23, 42], "id": 2}""",  # NOQA
         """{"jsonrpc": "2.0", "result": -19, "id": 2}"""
     ),
