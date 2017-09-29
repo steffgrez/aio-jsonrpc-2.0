@@ -22,6 +22,7 @@ setup(
     packages=find_packages(),
     # metadata for upload to PyPI
     author="Lahache Stephane",
+    author_email='slahache@gmail.com',
     url="https://github.com/steffgrez/aio-jsonrpc-2.0",
     description=desc,
     long_description=README + '\n\n' + CHANGES,
