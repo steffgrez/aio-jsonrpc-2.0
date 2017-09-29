@@ -81,6 +81,10 @@ resolver = RequestResolver(router, error_verbose=False)
         ''
     ),
     (
+        """{"jsonrpc": "2.0", "method": "update", "params": [null, 2, 3, 4, 5]}""",  # NOQA
+        ''
+    ),
+    (
         """{"jsonrpc": "2.0", "method": "notify"}""",
         ''
     ),
