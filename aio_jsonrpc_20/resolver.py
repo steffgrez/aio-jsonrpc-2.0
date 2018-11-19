@@ -50,10 +50,10 @@ class RequestResolver(object):
         # get response from unserialized request
         try:
             request = self.serializer.loads(str_request)
-        except (TypeError, ValueError):
-            logger.warning('Bad formatted json')
+        except (TypeError, ValueError) as decode_error:
+            logger.warning('JSON decode error: {}'.format(decode_error))
             response = self.response_maker.get_parse_error(
-                data='Bad formatted json'
+                data='Could not decode JSON request object.'
             )
         else:
             if request:
