@@ -10,7 +10,7 @@ json rpc 2.0 protocol implementation for asyncio, without transport.
 
 specification: http://www.jsonrpc.org/
 
-## Usage:
+## Usage:
 Example to resolve request:
 
 
