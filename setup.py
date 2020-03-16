@@ -26,6 +26,7 @@ setup(
     url="https://github.com/steffgrez/aio-jsonrpc-2.0",
     description=desc,
     long_description=README + '\n\n' + CHANGES,
+    long_description_content_type='text/markdown',
     keywords='json rpc jsonrpc json-rpc 2.0',
 
     # Full list:

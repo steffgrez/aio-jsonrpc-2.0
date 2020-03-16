@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/steffgrez/aio-jsonrpc-2.0.svg?branch=master)](https://travis-ci.org/steffgrez/aio-jsonrpc-2.0)
 [![Coverage Status](https://coveralls.io/repos/github/steffgrez/aio-jsonrpc-2.0/badge.svg?branch=master)](https://coveralls.io/github/steffgrez/aio-jsonrpc-2.0?branch=master)
 
--- **Still in beta** --
-
 ## Description
 json rpc 2.0 protocol implementation for asyncio, without transport.
 
